@@ -13,7 +13,7 @@ import os.path
 # from sklearn.model_selection import train_test_split
 
 
-def generate_file(base_airbnb):
+def generate_file():
     YEAR = 'year'
     MONTH = 'month'
     months = {'jan': 1, 'fev': 2, 'mar': 3, 'abr': 4, 'mai': 5, 'jun': 6, 'jul': 7, 'ago': 8, 'set': 9, 'out': 10,
@@ -62,10 +62,10 @@ def limits(column):
 
 
 def exclude_outliers(df, name_column):
-    qtde_rows = df.shape[0]
+    qte_rows = df.shape[0]
     lim_inf, lim_sup = limits(df[name_column])
     df = df.loc[(df[name_column] >= lim_inf) & (df[name_column] <= lim_sup), :]
-    rows_removed = qtde_rows - df.shape[0]
+    rows_removed = qte_rows - df.shape[0]
     return df, rows_removed
 
 
@@ -90,11 +90,6 @@ def graph_bar(column):
 
 def main():
     FILE_DISCOVER = 'resources/first_rows.csv'
-
-    if not os.path.isfile(FILE_DISCOVER):
-        print('n achou')
-        # generate_file(base_airbnb)
-
     columns = ['host_response_time', 'host_response_rate', 'host_is_superhost', 'host_listings_count',
                'latitude', 'longitude', 'property_type', 'room_type', 'accommodates', 'bathrooms', 'bedrooms',
                'beds', 'bed_type', 'amenities', 'price', 'security_deposit', 'cleaning_fee',
@@ -102,6 +97,9 @@ def main():
                'number_of_reviews', 'review_scores_rating', 'review_scores_accuracy',
                'review_scores_checkin', 'review_scores_communication', 'review_scores_location', 'review_scores_value',
                'instant_bookable', 'is_business_travel_ready', 'cancellation_policy']
+
+    if not os.path.isfile(FILE_DISCOVER):
+        generate_file()
 
     base_airbnb = pd.read_csv(FILE_DISCOVER, error_bad_lines=False, low_memory=False, sep=';')
     base_airbnb = base_airbnb.loc[:, columns]
@@ -116,30 +114,26 @@ def main():
 
     box_diagram(base_airbnb['price'])
     histogram(base_airbnb['price'])
-
     base_airbnb, linhas_removidas = exclude_outliers(base_airbnb, 'price')
     print('{} linhas removidas'.format(linhas_removidas))
-
     histogram(base_airbnb['price'])
     print(base_airbnb.shape)
 
     box_diagram(base_airbnb['extra_people'])
     histogram(base_airbnb['extra_people'])
-
     base_airbnb, linhas_removidas = exclude_outliers(base_airbnb, 'extra_people')
     print('{} linhas removidas'.format(linhas_removidas))
-
     histogram(base_airbnb['extra_people'])
     print(base_airbnb.shape)
 
     box_diagram(base_airbnb['host_listings_count'])
     graph_bar(base_airbnb['host_listings_count'])
-
     base_airbnb, linhas_removidas = exclude_outliers(base_airbnb, 'host_listings_count')
     print('{} linhas removidas'.format(linhas_removidas))
 
     box_diagram(base_airbnb['accommodates'])
     graph_bar(base_airbnb['accommodates'])
+
 
 if __name__ == '__main__':
     main()

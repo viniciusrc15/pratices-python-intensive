@@ -88,6 +88,22 @@ def graph_bar(column):
     ax.set_xlim(limits(column))
 
 
+def create_diagram(base_airbnb, param: str):
+    box_diagram(base_airbnb[param])
+    histogram(base_airbnb[param])
+    base_airbnb, linhas_removidas = exclude_outliers(base_airbnb, param)
+    print('{} linhas removidas'.format(linhas_removidas))
+    histogram(base_airbnb[param])
+    print(base_airbnb.shape)
+
+
+def create_box_diagram(base_airbnb, param):
+    box_diagram(base_airbnb[param])
+    graph_bar(base_airbnb[param])
+    base_airbnb, linhas_removidas = exclude_outliers(base_airbnb, param)
+    print('{} linhas removidas'.format(linhas_removidas))
+
+
 def main():
     FILE_DISCOVER = 'resources/first_rows.csv'
     columns = ['host_response_time', 'host_response_rate', 'host_is_superhost', 'host_listings_count',
@@ -103,7 +119,6 @@ def main():
 
     base_airbnb = pd.read_csv(FILE_DISCOVER, error_bad_lines=False, low_memory=False, sep=';')
     base_airbnb = base_airbnb.loc[:, columns]
-
     base_airbnb = handle_data(base_airbnb)
     base_airbnb = base_airbnb.dropna()
 
@@ -112,27 +127,13 @@ def main():
     # print('-' * 60)
     # print(base_airbnb.iloc[0])
 
-    box_diagram(base_airbnb['price'])
-    histogram(base_airbnb['price'])
-    base_airbnb, linhas_removidas = exclude_outliers(base_airbnb, 'price')
-    print('{} linhas removidas'.format(linhas_removidas))
-    histogram(base_airbnb['price'])
-    print(base_airbnb.shape)
+    create_diagram(base_airbnb, 'price')
+    create_diagram(base_airbnb, 'extra_people')
 
-    box_diagram(base_airbnb['extra_people'])
-    histogram(base_airbnb['extra_people'])
-    base_airbnb, linhas_removidas = exclude_outliers(base_airbnb, 'extra_people')
-    print('{} linhas removidas'.format(linhas_removidas))
-    histogram(base_airbnb['extra_people'])
-    print(base_airbnb.shape)
-
-    box_diagram(base_airbnb['host_listings_count'])
-    graph_bar(base_airbnb['host_listings_count'])
-    base_airbnb, linhas_removidas = exclude_outliers(base_airbnb, 'host_listings_count')
-    print('{} linhas removidas'.format(linhas_removidas))
-
-    box_diagram(base_airbnb['accommodates'])
-    graph_bar(base_airbnb['accommodates'])
+    create_box_diagram(base_airbnb, 'host_listings_count')
+    create_box_diagram(base_airbnb, 'bedrooms')
+    create_box_diagram(base_airbnb, 'beds')
+    create_box_diagram(base_airbnb, 'accommodates')
 
 
 if __name__ == '__main__':

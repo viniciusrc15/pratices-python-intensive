@@ -114,6 +114,7 @@ def main():
                'review_scores_checkin', 'review_scores_communication', 'review_scores_location', 'review_scores_value',
                'instant_bookable', 'is_business_travel_ready', 'cancellation_policy']
 
+
     if not os.path.isfile(FILE_DISCOVER):
         generate_file()
 
